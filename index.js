@@ -31,9 +31,9 @@ async function run_action() {
         
     } catch (error) {
         if(!nullable) {
-            core.setFailed(e.message);
+            core.setFailed(error.message);
         } else {
-            core.debug(`could not find parameter: ${e.message}`);
+            core.debug(`could not find parameter: ${error.message}`);
         }
     }
 }
