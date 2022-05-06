@@ -1,4 +1,4 @@
-name: "AWS SSM parameters to environment variables"
+name: "Produce8/AWS SSM parameters to environment variables"
 description: "load AWS SSM Parameters into environment variables"
 author: "Produce8"
 branding:
