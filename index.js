@@ -18,7 +18,7 @@ async function run_action() {
     if (typeof parsedValue === "object") {
       core.debug(`parsedValue: ${JSON.stringify(parsedValue)}`);
       // Assume basic JSON structure
-      for (var key in parsedValue) {
+      for (const key in parsedValue) {
         setEnvironmentVar(keyName + key, parsedValue[key]);
       }
     } else {
