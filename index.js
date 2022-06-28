@@ -8,7 +8,6 @@ async function run_action() {
   const ssmValue = core.getInput("ssm-value");
   const ssmType = core.getInput("ssm-value-type");
   const prefix = core.getInput("prefix");
-  const keyName = core.getInput("key-name");
   const decryption = core.getInput("decryption") === "true";
   const nullable = core.getInput("nullable") === "true";
   const jsonAsString = core.getInput("json-as-string") === "true";
@@ -16,13 +15,13 @@ async function run_action() {
 
   try {
     const paramValue = await ssm.getParameter(ssmPath, decryption, region);
-    jsonOrString(paramValue, core, prefix, ssmPath, jsonAsString, keyName);
+    jsonOrString(paramValue, core, prefix, ssmPath, jsonAsString);
   } catch (error) {
     core.debug(`Error name: ${error.name}`);
     if (error.name === "ParameterNotFound") {
       core.debug(`could not find parameter, attemping to create parameter`);
       ssm.createSsmValue(ssmPath, region, ssmValue, ssmType, core, nullable);
-      jsonOrString(ssmValue, core, prefix, ssmPath, jsonAsString, keyName);
+      jsonOrString(ssmValue, core, prefix, ssmPath, jsonAsString);
       return;
     }
   }
@@ -45,17 +44,12 @@ function setEnvironmentVar(key, value) {
   execSync(cmdString, { stdio: "inherit" });
 }
 
-function jsonOrString(
-  paramValue,
-  core,
-  prefix,
-  ssmPath,
-  jsonAsString,
-  keyName
-) {
+function jsonOrString(paramValue, core, prefix, ssmPath, jsonAsString) {
   const parsedValue = parseValue(paramValue);
-  if (jsonAsString && typeof parsedValue === "object") {
-    return setEnvironmentVar(keyName, `${paramValue}`);
+  if (jsonAsString) {
+    const envVarName = prefix + split[split.length - 1];
+    core.debug(`Using prefix + end of ssmPath for env var name: ${envVarName}`);
+    return setEnvironmentVar(envVarName, `${paramValue}`);
   }
   if (typeof parsedValue === "object") {
     core.debug(`parsedValue: ${JSON.stringify(parsedValue)}`);
