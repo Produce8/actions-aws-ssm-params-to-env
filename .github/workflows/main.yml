@@ -2,7 +2,7 @@ name: Local-Action-Test
 
 on:
   push:
-    branches: [master]
+    branches: [master, feat-pro-1622]
 
 jobs:
   test:
