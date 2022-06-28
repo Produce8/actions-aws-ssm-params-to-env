@@ -97,6 +97,8 @@ the action will set environment variables for you for each key/value pair of the
 `$APPLICATION_URL` will be set to `https://api.com` and
 `$DB_NAME` will be set to `somedbname`.
 
+To avoid this default behavior and treat the json object as a string, use the json-as-string parameter.
+
 ### String data
 
 If you have an ssm parameter path of `/application/staging/parameter` with the value:
