@@ -6,6 +6,7 @@ your credentials or assume a role, you will not need to explicitly include the A
 variables in this action's step.
 
 ## Usage:
+To pull value from existing object
 
 ```yaml
 - uses: Produce8/actions-aws-ssm-params-to-env@v1.2
@@ -20,6 +21,24 @@ variables in this action's step.
     nullable: false # optional, default false
 ```
 
+To pull value if paramter store value exists, or create a parameter store entry with a given value if one doesn't exist:
+
+```yaml
+- uses: Produce8/actions-aws-ssm-params-to-env@v1.2
+  env:
+    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} # required
+    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # required
+    AWS_DEFAULT_REGION: ap-northeast-2 # required
+  with:
+    ssm-path: /path/to/parameter # required
+    ssm-value: # optional (but necessary for creating new paramater store value)
+    ssm-value-type # optional (but necessary for creating new paramater store value)
+    prefix: SSM_ # optional
+    json-as-string # optional, default false
+    decryption: true # optional, default false
+    nullable: false # optional, default false
+```
+
 ---
 
 ## Options:
@@ -28,6 +47,14 @@ variables in this action's step.
 
 AWS Systems Manager Parameter Store path to the parameter
 (e.g. `/path/to/parameter`)
+
+### ssm-value(optional)
+
+String, StringList or SecureString value to write to a new Parmeter Store path if it does not exist
+
+### ssm-value-type(optional)
+
+String, StringList or SecureString
 
 ### prefix(optional)
 
@@ -46,6 +73,10 @@ the value of such parameters from your logs.
 ### nullable(optional)
 
 Boolean which indicates whether the parameter needs to exist
+
+### json-as-string(optional)
+
+Boolean which - when true - overwrites default behavior of parsing JSON objects into separate environment variables
 
 ---
 
