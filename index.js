@@ -7,7 +7,7 @@ async function run_action() {
   const ssmPath = core.getInput("ssm-path", { required: true });
   const ssmValue = core.getInput("ssm-value");
   const ssmType = core.getInput("ssm-value-type");
-  const keyName = core.getInput("key-name");
+  const prefix = core.getInput("prefix");
   const decryption = core.getInput("decryption") === "true";
   const nullable = core.getInput("nullable") === "true";
   const region = process.env.AWS_DEFAULT_REGION;
@@ -19,15 +19,15 @@ async function run_action() {
       core.debug(`parsedValue: ${JSON.stringify(parsedValue)}`);
       // Assume basic JSON structure
       for (const key in parsedValue) {
-        setEnvironmentVar(keyName + key, parsedValue[key]);
+        setEnvironmentVar(prefix + key, parsedValue[key]);
       }
     } else {
       core.debug(`parsedValue: ${parsedValue}`);
       // Set environment variable with ssmPath name as the env variable
       const split = ssmPath.split("/");
-      const envVarName = keyName + split[split.length - 1];
+      const envVarName = prefix + split[split.length - 1];
       core.debug(
-        `Using keyName + end of ssmPath for env var name: ${envVarName}`
+        `Using prefix + end of ssmPath for env var name: ${envVarName}`
       );
       setEnvironmentVar(envVarName, parsedValue);
     }

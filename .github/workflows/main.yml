@@ -39,6 +39,14 @@ jobs:
           ssm-path: /actions-testing/test-parameter-basic
           decryption: false
           nullable: true
+      
+      - name: Test creating ssm value
+        uses: ./
+        id: new-ssm-value
+        with:
+            ssm-path: /actions-testing/test-new-parameter
+            ssm-value: "test string value"
+            ssm-value-type: String
 
       - name: Test for Env Variables
         run: |
