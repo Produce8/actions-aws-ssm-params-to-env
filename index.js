@@ -5,12 +5,12 @@ const execSync = require("child_process").execSync;
 
 async function run_action() {
   const ssmPath = core.getInput("ssm-path", { required: true });
-  const ssmValue = core.getInput("ssm-value", { required: false });
-  const ssmType = core.getInput("ssm-value-type", { required: false });
+  const ssmValue = core.getInput("ssm-value");
+  const ssmType = core.getInput("ssm-value-type");
   const keyName = core.getInput("key-name");
-  const region = process.env.AWS_DEFAULT_REGION;
   const decryption = core.getInput("decryption") === "true";
   const nullable = core.getInput("nullable") === "true";
+  const region = process.env.AWS_DEFAULT_REGION;
 
   try {
     const paramValue = await ssm.getParameter(ssmPath, decryption, region);
