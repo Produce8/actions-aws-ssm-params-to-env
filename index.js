@@ -23,6 +23,8 @@ async function run_action() {
       ssm.createSsmValue(ssmPath, region, ssmValue, ssmType, core, nullable);
       jsonOrString(ssmValue, core, prefix, ssmPath, jsonAsString);
       return;
+    } else {
+      core.debug(`could not find parameter: ${error.message}`);
     }
   }
 }
@@ -49,7 +51,7 @@ function jsonOrString(paramValue, core, prefix, ssmPath, jsonAsString) {
   if (jsonAsString) {
     const envVarName = prefix + split[split.length - 1];
     core.debug(`Using prefix + end of ssmPath for env var name: ${envVarName}`);
-    return setEnvironmentVar(envVarName, `${paramValue}`);
+    return setEnvironmentVar(envVarName, paramValue);
   }
   if (typeof parsedValue === "object") {
     core.debug(`parsedValue: ${JSON.stringify(parsedValue)}`);
