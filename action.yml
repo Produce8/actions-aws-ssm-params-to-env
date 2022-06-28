@@ -17,11 +17,17 @@ inputs:
   prefix:
     description: "Set a prefix on the environment variable"
     required: false
+  key-name:
+    description: "Set a key name on the parameter store variable"
+    required: false
   decryption:
     description: "Whether the parameter must be decrypted or not"
     required: false
   nullable:
     description: "Whether the parameter must exist or not"
+    required: false
+  json-as-string:
+    description: "Pass JSON object as a string"
     required: false
 runs:
   using: "node12"
