@@ -49,7 +49,7 @@ function setEnvironmentVar(key, value) {
 function jsonOrString(paramValue, core, prefix, ssmPath, jsonAsString) {
   const parsedValue = parseValue(paramValue);
   if (jsonAsString) {
-    const envVarName = prefix + split[split.length - 1];
+    const envVarName = getEnvName(ssmPath, prefix);
     core.debug(`Using prefix + end of ssmPath for env var name: ${envVarName}`);
     return setEnvironmentVar(envVarName, paramValue);
   }
@@ -63,11 +63,15 @@ function jsonOrString(paramValue, core, prefix, ssmPath, jsonAsString) {
   } else {
     core.debug(`parsedValue: ${parsedValue}`);
     // Set environment variable with ssmPath name as the env variable
-    const split = ssmPath.split("/");
-    const envVarName = prefix + split[split.length - 1];
+    const envVarName = getEnvName(ssmPath, prefix);
     core.debug(`Using prefix + end of ssmPath for env var name: ${envVarName}`);
     return setEnvironmentVar(envVarName, parsedValue);
   }
+}
+
+function getEnvName(path, prefix) {
+  const split = path.split("/");
+  return prefix + split[split.length - 1];
 }
 
 run_action();
