@@ -14,33 +14,14 @@ async function run_action() {
 
   try {
     const paramValue = await ssm.getParameter(ssmPath, decryption, region);
-    const parsedValue = parseValue(paramValue);
-    if (typeof parsedValue === "object") {
-      core.debug(`parsedValue: ${JSON.stringify(parsedValue)}`);
-      // Assume basic JSON structure
-      for (const key in parsedValue) {
-        setEnvironmentVar(prefix + key, parsedValue[key]);
-      }
-    } else {
-      core.debug(`parsedValue: ${parsedValue}`);
-      // Set environment variable with ssmPath name as the env variable
-      const split = ssmPath.split("/");
-      const envVarName = prefix + split[split.length - 1];
-      core.debug(
-        `Using prefix + end of ssmPath for env var name: ${envVarName}`
-      );
-      setEnvironmentVar(envVarName, parsedValue);
-    }
+    jsonOrString(paramValue, core, prefix, ssmPath);
   } catch (error) {
-    if (error instanceof ParameterNotFound) {
+    core.debug(`Error name: ${error.name}`);
+    if (error.name === "ParameterNotFound") {
       core.debug(`could not find parameter, attemping to create parameter`);
-      createSsmValue(ssmPath, region, ssmValue, ssmType);
-      run_action(ssmPath, decryption, region);
-    }
-    if (!nullable) {
-      core.setFailed(error.message);
-    } else {
-      core.debug(`could not find parameter: ${error.message}`);
+      ssm.createSsmValue(ssmPath, region, ssmValue, ssmType, core, nullable);
+      jsonOrString(ssmValue, core, prefix, ssmPath);
+      return;
     }
   }
 }
@@ -60,6 +41,24 @@ function setEnvironmentVar(key, value) {
   cmdString = `echo "${key}=${value}" >> $GITHUB_ENV`;
   core.debug(`Running cmd: ${cmdString}`);
   execSync(cmdString, { stdio: "inherit" });
+}
+
+function jsonOrString(paramValue, core, prefix, ssmPath) {
+  const parsedValue = parseValue(paramValue);
+  if (typeof parsedValue === "object") {
+    core.debug(`parsedValue: ${JSON.stringify(parsedValue)}`);
+    // Assume basic JSON structure
+    for (const key in parsedValue) {
+      setEnvironmentVar(prefix + key, parsedValue[key]);
+    }
+  } else {
+    core.debug(`parsedValue: ${parsedValue}`);
+    // Set environment variable with ssmPath name as the env variable
+    const split = ssmPath.split("/");
+    const envVarName = prefix + split[split.length - 1];
+    core.debug(`Using prefix + end of ssmPath for env var name: ${envVarName}`);
+    setEnvironmentVar(envVarName, parsedValue);
+  }
 }
 
 run_action();

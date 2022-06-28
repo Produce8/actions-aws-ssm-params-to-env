@@ -11,7 +11,14 @@ const getParameter = async (ssmPath, decryption, region) => {
   return result.Parameter.Value;
 };
 
-const createSsmValue = async (ssmPath, region, ssmValue, ssmType) => {
+const createSsmValue = async (
+  ssmPath,
+  region,
+  ssmValue,
+  ssmType,
+  core,
+  nullable
+) => {
   try {
     core.info(`Storing Variable in path [${ssmPath}]`);
     // Load the AWS Region to use in SSM
@@ -35,7 +42,11 @@ const createSsmValue = async (ssmPath, region, ssmValue, ssmType) => {
     );
     core.info(`Successfully Stored parameter in path [${ssmPath}]`);
   } catch (error) {
-    core.setFailed(error.message);
+    if (!nullable) {
+      core.setFailed(error.message);
+    } else {
+      core.debug(`could not find parameter: ${error.message}`);
+    }
   }
 };
 
