@@ -55,7 +55,7 @@ function jsonOrString(
 ) {
   const parsedValue = parseValue(paramValue);
   if (jsonAsString && typeof parsedValue === "object") {
-    return setEnvironmentVar(keyName, paramValue);
+    return setEnvironmentVar(keyName, `${paramValue}`);
   }
   if (typeof parsedValue === "object") {
     core.debug(`parsedValue: ${JSON.stringify(parsedValue)}`);
