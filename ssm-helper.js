@@ -36,7 +36,7 @@ const createSsmValue = async (
       core.debug(`Setting the KeyId to ${keyId}`);
       params["KeyId"] = keyId;
     }
-    const result = await ssm.putParameter(params);
+    const result = await ssm.putParameter(params).promise();
     core.debug(
       `Parameter details Version [${result.Version}] Tier [${result.Tier}]`
     );
