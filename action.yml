@@ -8,6 +8,12 @@ inputs:
   ssm-path:
     description: "AWS SSM path for parameter (eg. `/ssm/parameter`)"
     required: true
+  ssm-value:
+    description: "AWS SSM value to create new parameter"
+    required: false
+  ssm-value-type:
+    description: "AWS SSM parameter type: String, StringList or SecureString"
+    required: false
   prefix:
     description: "Set a prefix on the environment variable"
     required: false
@@ -16,6 +22,9 @@ inputs:
     required: false
   nullable:
     description: "Whether the parameter must exist or not"
+    required: false
+  json-as-string:
+    description: "Pass JSON object as a string"
     required: false
 runs:
   using: "node12"
