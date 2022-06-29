@@ -97,7 +97,18 @@ the action will set environment variables for you for each key/value pair of the
 `$APPLICATION_URL` will be set to `https://api.com` and
 `$DB_NAME` will be set to `somedbname`.
 
-To avoid this default behavior and treat the json object as a string, use the json-as-string parameter.
+### JSON data as a string value
+
+To avoid the default behavior of setting JSON data as inidivdual environment variables, and instead keep a stringified JSON object a string, use the json-as-string parameter with a value of true.
+
+If you have an ssm parameter path of `/application/staging/parameter` with the value:
+
+```
+"{\n  \"APPLICATION_URL\": \"https://api.com\",\n  \"DB_NAME\": \"somedbname\"\n}"
+```
+
+the action will set an environment variable for you such that `echo $parameter`
+will output an unmodified version of the JSON string.
 
 ### String data
 
